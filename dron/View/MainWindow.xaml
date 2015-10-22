@@ -1,0 +1,33 @@
+﻿<Window x:Class="dron.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:dron"
+        mc:Ignorable="d"
+        Title="Dron" Height="350" Width="525">
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <ToolBarTray>
+                <ToolBar>
+                    <Button Content="Aktywuj"/>
+                    <Button Content="Deaktywuj"/>
+                </ToolBar>
+            </ToolBarTray>
+        </StackPanel>
+        <StackPanel>
+            <TabControl>
+                <TabItem Header="Główne okno">
+                    <StackPanel>
+
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Ustawienia">
+                    <StackPanel>
+
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </StackPanel>
+    </StackPanel>
+</Window>

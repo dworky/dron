@@ -66,6 +66,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Helpers\GamePad.cs" />
+    <Compile Include="Helpers\Instructions.cs" />
     <Compile Include="Helpers\UdpControl.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="View\MainWindow.xaml.cs">

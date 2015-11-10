@@ -5,29 +5,75 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:dron"
         mc:Ignorable="d"
-        Title="Dron" Height="350" Width="525">
-    <StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <ToolBarTray>
+        Title="Dron" Height="400" Width="600">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="267*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+
+        <StackPanel Grid.RowSpan="1" Grid.ColumnSpan="2">
+            <ToolBarTray DockPanel.Dock="Top">
                 <ToolBar>
-                    <Button Content="Aktywuj"/>
-                    <Button Content="Deaktywuj"/>
+                    <Button x:Name="b_WifiConnection" ToolTip="Status połączenia WIFI" Click="b_WifiConnection_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image x:Name="img_WifiDisconnected" Source="{StaticResource ResourceKey=iconWifiDisconnected}" />
+                            <Image x:Name="img_WifiConnected" Source="{StaticResource ResourceKey=iconWifiConnected}" Visibility="Collapsed" />
+                            <TextBlock x:Name="tB_WifiConnection" Margin="3,0,0,0" FontSize="15">Połącz</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="b_KinectConnection" ToolTip="Status połączenia Kinect" >
+                        <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                            <Image x:Name="img_KinectDisconnected" Source="{StaticResource ResourceKey=iconKinectDisconnected}" />
+                            <Image x:Name="img_KinectConnected" Source="{StaticResource ResourceKey=iconKinectConnected}" Visibility="Collapsed" />
+                            <TextBlock x:Name="tB_KinectConnection" Margin="3,0,0,0" FontSize="15">Połącz</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Status połączenia pada">
+                        <StackPanel Orientation="Horizontal" Margin="5,0">
+                            <Image x:Name="img_PadDisconnected" Source="{StaticResource ResourceKey=iconPadDisconnected}" />
+                            <Image x:Name="img_PadConnected" Source="{StaticResource ResourceKey=iconPadConnected}" Visibility="Collapsed" />
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="b_Info" ToolTip="Informacje na temat programu" Margin="5,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{StaticResource ResourceKey=iconInfo}" />                            
+                        </StackPanel>
+                    </Button>
                 </ToolBar>
             </ToolBarTray>
         </StackPanel>
-        <StackPanel>
-            <TabControl>
-                <TabItem Header="Główne okno">
-                    <StackPanel>
+        <Border Background="Black" Grid.Column="1" Grid.Row="1" Grid.RowSpan="4">
+            <Image x:Name="img_Kinect" />
+        </Border>
+        <GroupBox Header="Sterowanie" Grid.Row="1">
+            <StackPanel>
+                <RadioButton GroupName="Control" Content="Pad" Checked="rB_Control_Checked" />
+                <RadioButton GroupName="Control" Content="Klawiatura" IsChecked="True" Checked="rB_Control_Checked" />
+                <RadioButton GroupName="Control" Content="Kinect" Checked="rB_Control_Checked" />
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Ustawienia drona" Grid.Row="2">
+            <StackPanel>
+                <Label x:Name="l_Speed" Content="Szybkość manewrów: 25%" HorizontalAlignment="Center" />
+                <Slider x:Name="s_Speed" Maximum="100" Value="25" ValueChanged="s_Speed_ValueChanged" />
+            </StackPanel>
+        </GroupBox>
+        <GroupBox  Header="Status drona" Grid.Row="3">
+            <StackPanel>
+                <Label  Content="Stan baterii" HorizontalAlignment="Center" />
+                <ProgressBar Height="10" />
+            </StackPanel>
+            
+        </GroupBox>
 
-                    </StackPanel>
-                </TabItem>
-                <TabItem Header="Ustawienia">
-                    <StackPanel>
-
-                    </StackPanel>
-                </TabItem>
-            </TabControl>
-        </StackPanel>
-    </StackPanel>
+    </Grid>
 </Window>

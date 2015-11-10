@@ -4,6 +4,12 @@
              xmlns:local="clr-namespace:dron"
              StartupUri="View/MainWindow.xaml">
     <Application.Resources>
-         
+        <BitmapImage x:Key="iconWifiConnected" UriSource="./Icons/wifiConnected.png" />
+        <BitmapImage x:Key="iconWifiDisconnected" UriSource="./Icons/wifiDisconnected.png" />
+        <BitmapImage x:Key="iconPadConnected" UriSource="./Icons/padConnected.png" />
+        <BitmapImage x:Key="iconPadDisconnected" UriSource="./Icons/padDisconnected.png" />
+        <BitmapImage x:Key="iconKinectConnected" UriSource="./Icons/kinectConnected.png" />
+        <BitmapImage x:Key="iconKinectDisconnected" UriSource="./Icons/kinectDisconnected.png" />
+        <BitmapImage x:Key="iconInfo" UriSource="./Icons/info.png" />
     </Application.Resources>
 </Application>

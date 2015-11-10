@@ -1,10 +1,14 @@
-﻿using SharpDX.XInput;
+﻿using System;
+using SharpDX.XInput;
 
 namespace dron.Helpers
 {
-    class GamePad
+    class GamePad : IControl
     {
         Controller controller;
+        public delegate void OnConnectionChange(bool status);
+        OnConnectionChange onConnectionChange;
+        bool status;
         float leftTrigger, rightTrigger, leftThumbX, leftThumbY, rightThumbX, rightThumbY;
         public bool Connected { get { return controller.IsConnected; } }
         public float LeftTrigger { get { return leftTrigger / 255; } }
@@ -27,16 +31,55 @@ namespace dron.Helpers
         public bool LeftThumb { get; private set; }
         public bool RightThumb { get; private set; }
 
-        public GamePad()
+        public int Roll
         {
-            controller = new Controller(UserIndex.One);
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
+        public int Pitch
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int Gaz
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int Yaw
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public GamePad(OnConnectionChange function)
+        {
+            onConnectionChange += function;
+            controller = new Controller(UserIndex.One);
+            status = Connected;
+            onConnectionChange.Invoke(status);
         }
 
         public void Update()
         {
             if (Connected)
             {
+                if (status != Connected)
+                {
+                    status = Connected;
+                    onConnectionChange.Invoke(status);
+                }                
                 State state = controller.GetState();
                 leftTrigger = state.Gamepad.LeftTrigger;
                 rightTrigger = state.Gamepad.RightTrigger;
@@ -60,6 +103,11 @@ namespace dron.Helpers
             }
             else
             {
+                if (status != Connected)
+                {
+                    status = Connected;
+                    onConnectionChange.Invoke(status);
+                }
                 leftTrigger = 0;
                 rightTrigger = 0;
                 leftThumbX = 0;
@@ -80,6 +128,11 @@ namespace dron.Helpers
                 LeftThumb = false;
                 RightThumb = false;
             }
+        }
+
+        public void Refresh()
+        {
+            throw new NotImplementedException();
         }
     }
 }

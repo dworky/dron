@@ -1,37 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace dron.Helpers
 {
     static class Instructions
     {
-        public enum Order { UP, DOWN, FORWARD, BACK, LEFT, RIGHT, ROTATELEFT, ROTATERIGHT, HOVER };
-        public static int ValueOfSpeed = 1;
-        public static int[] Speeds = new int[]{ -1082130432, -1086324736, -1090519040, -1098907648, 1048576000, 1048576000, 1061158912, 1065353216 };
-        public static int Sequence = 0;
+        public enum Order { UP, DOWN, FORWARD, BACK, LEFT, RIGHT, ROTATELEFT, ROTATERIGHT, HOVER };      
+        static int Sequence = 0;
+        public static float Speed = FloatConversion(0.25f);
         public static Byte[] EmergencySterring(Order order)
         {
             switch (order)
             {
                 case Order.UP:
-                    return MakeCommandPCMD(gaz: 1);
+                    return MakeCommandPCMD(gaz: FloatConversion(Speed));
                 case Order.DOWN:
-                    return MakeCommandPCMD(gaz: -1);
+                    return MakeCommandPCMD(gaz: FloatConversion(-Speed));
                 case Order.FORWARD:
-                    return MakeCommandPCMD(pitch: 1);
+                    return MakeCommandPCMD(pitch: FloatConversion(Speed));
                 case Order.BACK:
-                    return MakeCommandPCMD(pitch: -1);
+                    return MakeCommandPCMD(pitch: FloatConversion(-Speed));
                 case Order.LEFT:
-                    return MakeCommandPCMD(roll: -1);
+                    return MakeCommandPCMD(roll: FloatConversion(-Speed));
                 case Order.RIGHT:
-                    return MakeCommandPCMD(roll: 1);
+                    return MakeCommandPCMD(roll: FloatConversion(Speed));
                 case Order.ROTATELEFT:
-                    return MakeCommandPCMD(yaw: -1);
+                    return MakeCommandPCMD(yaw: FloatConversion(-Speed));
                 case Order.ROTATERIGHT:
-                    return MakeCommandPCMD(yaw: 1);
+                    return MakeCommandPCMD(yaw: FloatConversion(Speed));
                 case Order.HOVER:
                     return MakeCommandPCMD(flag: 0);
                 default:
@@ -39,10 +36,10 @@ namespace dron.Helpers
             }
         }
 
-        //public static int FloatConversion(float value)
-        //{
-
-        //}
+        public static int FloatConversion(float value)
+        {
+            return BitConverter.ToInt32(BitConverter.GetBytes(value), 0);
+        }
 
         /// <summary>
         /// Takeoff/Landing/Emergency stop command
@@ -62,8 +59,10 @@ namespace dron.Helpers
         /// </summary>
         public static Byte[] MakeCommandPCMD(int flag = 1, int roll = 0, int pitch = 0, int gaz = 0, int yaw = 0)
         {
+            Console.WriteLine(String.Format("AT*PCMD={0},{1},{2},{3},{4},{5}\r",
+                Sequence++, flag, roll, pitch, gaz, yaw));
             return Encoding.ASCII.GetBytes(String.Format("AT*PCMD={0},{1},{2},{3},{4},{5}\r", 
-                Sequence++, flag, roll, pitch, gaz, yaw)); 
+                Sequence++, flag, roll, pitch, gaz, yaw));         
         }
 
 

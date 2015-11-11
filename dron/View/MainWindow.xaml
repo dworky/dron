@@ -43,7 +43,7 @@
                             <Image x:Name="img_PadConnected" Source="{StaticResource ResourceKey=iconPadConnected}" Visibility="Collapsed" />
                         </StackPanel>
                     </Button>
-                    <Button x:Name="b_Info" ToolTip="Informacje na temat programu" Margin="5,0">
+                    <Button x:Name="b_Info" ToolTip="Informacje na temat programu" Margin="5,0" Click="b_Info_Click">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource ResourceKey=iconInfo}" />                            
                         </StackPanel>
@@ -65,6 +65,10 @@
             <StackPanel>
                 <Label x:Name="l_Speed" Content="Szybkość manewrów: 25%" HorizontalAlignment="Center" />
                 <Slider x:Name="s_Speed" Maximum="100" Value="25" ValueChanged="s_Speed_ValueChanged" />
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <Button x:Name="b_Start" Content="Wystartuj" IsEnabled="False" Click="b_Start_Click" />
+                    <Button x:Name="b_Land" Content="Wyląduj" Margin="10,0,0,0" IsEnabled="False" Click="b_Land_Click" />
+                </StackPanel>
             </StackPanel>
         </GroupBox>
         <GroupBox  Header="Status drona" Grid.Row="3">

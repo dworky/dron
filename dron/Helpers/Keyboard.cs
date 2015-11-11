@@ -6,11 +6,37 @@ namespace dron.Helpers
 {
     class Keyboard : IControl
     {
+        public bool W { get; set; }
+        public bool S { get; set; }
+        public bool A { get; set; }
+        public bool D { get; set; }
+        public bool UP { get; set; }
+        public bool DOWN { get; set; }
+        public bool LEFT { get; set; }
+        public bool RIGHT { get; set; }
+
+        public Keyboard()
+        {
+            Refresh();
+        }
+
         public int Gaz
         {
             get
             {
-                throw new NotImplementedException();
+                if (W && S)
+                {
+                    return 0;
+                }
+                else if (W)
+                {
+                    return Instructions.FloatConversion(Instructions.Speed);
+                }
+                else if (S)
+                {
+                    return Instructions.FloatConversion(-Instructions.Speed);
+                }
+                return 0;                    
             }
         }
 
@@ -18,7 +44,19 @@ namespace dron.Helpers
         {
             get
             {
-                throw new NotImplementedException();
+                if (UP && DOWN)
+                {
+                    return 0;
+                }
+                else if (UP)
+                {
+                    return Instructions.FloatConversion(Instructions.Speed);
+                }
+                else if (DOWN)
+                {
+                    return Instructions.FloatConversion(-Instructions.Speed);
+                }
+                return 0;
             }
         }
 
@@ -26,7 +64,19 @@ namespace dron.Helpers
         {
             get
             {
-                throw new NotImplementedException();
+                if (A && D)
+                {
+                    return 0;
+                }
+                else if (D)
+                {
+                    return Instructions.FloatConversion(Instructions.Speed);
+                }
+                else if (A)
+                {
+                    return Instructions.FloatConversion(-Instructions.Speed);
+                }
+                return 0;
             }
         }
 
@@ -34,13 +84,40 @@ namespace dron.Helpers
         {
             get
             {
-                throw new NotImplementedException();
+                if (LEFT && RIGHT)
+                {
+                    return 0;
+                }
+                else if (RIGHT)
+                {
+                    return Instructions.FloatConversion(Instructions.Speed);
+                }
+                else if (LEFT)
+                {
+                    return Instructions.FloatConversion(-Instructions.Speed);
+                }
+                return 0;
             }
         }
 
         public void Refresh()
         {
-            throw new NotImplementedException();
+            var key = KeyboardInfo.GetKeyState(Keys.W);
+            W = key.IsPressed;
+            key = KeyboardInfo.GetKeyState(Keys.S);
+            S = key.IsPressed;
+            key = KeyboardInfo.GetKeyState(Keys.A);
+            A = key.IsPressed;
+            key = KeyboardInfo.GetKeyState(Keys.D);
+            D = key.IsPressed;
+            key = KeyboardInfo.GetKeyState(Keys.Up);
+            UP = key.IsPressed;
+            key = KeyboardInfo.GetKeyState(Keys.Down);
+            DOWN = key.IsPressed;
+            key = KeyboardInfo.GetKeyState(Keys.Left);
+            LEFT = key.IsPressed;
+            key = KeyboardInfo.GetKeyState(Keys.Right);
+            RIGHT = key.IsPressed;
         }
     }
 

@@ -35,7 +35,7 @@ namespace dron.Helpers
         {
             get
             {
-                throw new NotImplementedException();
+                return Instructions.FloatConversion(this.RightThumbX);
             }
         }
 
@@ -43,7 +43,7 @@ namespace dron.Helpers
         {
             get
             {
-                throw new NotImplementedException();
+                return Instructions.FloatConversion(this.LeftThumbY);
             }
         }
 
@@ -51,7 +51,7 @@ namespace dron.Helpers
         {
             get
             {
-                throw new NotImplementedException();
+                return Instructions.FloatConversion(this.RightTrigger - this.LeftTrigger);
             }
         }
 
@@ -59,9 +59,15 @@ namespace dron.Helpers
         {
             get
             {
-                throw new NotImplementedException();
+                return Instructions.FloatConversion(this.RightThumbX);
             }
         }
+
+        public void Refresh()
+        {
+            Update();
+        }
+    
 
         public GamePad(OnConnectionChange function)
         {
@@ -79,7 +85,7 @@ namespace dron.Helpers
                 {
                     status = Connected;
                     onConnectionChange.Invoke(status);
-                }                
+                }
                 State state = controller.GetState();
                 leftTrigger = state.Gamepad.LeftTrigger;
                 rightTrigger = state.Gamepad.RightTrigger;
@@ -129,10 +135,5 @@ namespace dron.Helpers
                 RightThumb = false;
             }
         }
-
-        public void Refresh()
-        {
-            throw new NotImplementedException();
-        }
-    }
+    }       
 }

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Text;
 
-
-namespace dron.Helpers
+namespace dron
 {
     static class Instructions
     {
@@ -60,7 +59,7 @@ namespace dron.Helpers
         public static Byte[] MakeCommandPCMD(int flag = 1, int roll = 0, int pitch = 0, int gaz = 0, int yaw = 0)
         {
             Console.WriteLine(String.Format("AT*PCMD={0},{1},{2},{3},{4},{5}\r",
-                Sequence++, flag, roll, pitch, gaz, yaw));
+                Sequence, flag, roll, pitch, gaz, yaw));
             return Encoding.ASCII.GetBytes(String.Format("AT*PCMD={0},{1},{2},{3},{4},{5}\r", 
                 Sequence++, flag, roll, pitch, gaz, yaw));         
         }

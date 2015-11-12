@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
-namespace dron.Helpers
+namespace dron
 {
     class Keyboard : IControl
     {

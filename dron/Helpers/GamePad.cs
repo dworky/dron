@@ -1,7 +1,6 @@
-﻿using System;
-using SharpDX.XInput;
+﻿using SharpDX.XInput;
 
-namespace dron.Helpers
+namespace dron
 {
     class GamePad : IControl
     {

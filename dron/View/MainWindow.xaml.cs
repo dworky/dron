@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Drawing;
-using System.Threading;
+using System.Net;
+using System.Net.Sockets;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 using System.Windows.Threading;
 
 namespace dron.View
@@ -14,9 +13,10 @@ namespace dron.View
     public partial class MainWindow : Window
     {
 
-        Helpers.IControl[] controlDevices;
+        IControl[] controlDevices;
         DispatcherTimer timerMainLoop;
-
+        private UdpClient udpClient;
+        private const int Port = 5554;
 
         private enum Device
         {
@@ -30,16 +30,15 @@ namespace dron.View
         public MainWindow()
         {
             InitializeComponent();
-            controlDevices = new Helpers.IControl[3];
-            controlDevices[0] = new Helpers.GamePad(PadStatusChanged);
-            controlDevices[1] = new Helpers.Keyboard();
-            controlDevices[2] = new Helpers.Kinect();
+            controlDevices = new IControl[3];
+            controlDevices[0] = new GamePad(PadStatusChanged);
+            controlDevices[1] = new Keyboard();
+            controlDevices[2] = new Kinect();
             currentDevice = Device.Keyboard;
             timerMainLoop = new DispatcherTimer();
             timerMainLoop.Interval = TimeSpan.FromMilliseconds(30);
             timerMainLoop.Tick += timerMainLoop_Tick;
-
-
+           
         }
 
 
@@ -53,6 +52,7 @@ namespace dron.View
                 b_Start.IsEnabled = true;
                 b_Land.IsEnabled = true;
                 //UDP client ctor
+                udpClient = new UdpClient();
                 timerMainLoop.Start();
             }
             else
@@ -64,15 +64,13 @@ namespace dron.View
                 b_Land.IsEnabled = false;
                 timerMainLoop.Stop();
                 //UDP client close
+                udpClient.Close();
             }
-
-
         }
-
 
         private void rB_Control_Checked(object sender, RoutedEventArgs e)
         {
-            var radioButton = sender as System.Windows.Controls.RadioButton;
+            var radioButton = sender as RadioButton;
             switch ((string)radioButton.Content)
             {
                 case "Pad":
@@ -90,8 +88,8 @@ namespace dron.View
         private void s_Speed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             l_Speed.Content = "Szybkość manewrów: " + (int)s_Speed.Value + "%";
-            Helpers.Instructions.Speed = (float)s_Speed.Value / 100;
-            Console.WriteLine(Helpers.Instructions.Speed);
+            Instructions.Speed = (float)s_Speed.Value / 100;
+            Console.WriteLine(Instructions.Speed);
         }
 
         private void PadStatusChanged(bool status)
@@ -110,23 +108,22 @@ namespace dron.View
 
         private void timerMainLoop_Tick(object sender, EventArgs e)
         {
-            Helpers.IControl device = controlDevices[(int)currentDevice];
+            IControl device = controlDevices[(int)currentDevice];
             device.Refresh();
-            var command = Helpers.Instructions.MakeCommandPCMD(1 , device.Roll, device.Pitch, device.Gaz, device.Yaw);
-            //now send by udp
-            Console.WriteLine("Wysłano pakiet");
+            var command = Instructions.MakeCommandPCMD(1 , device.Roll, device.Pitch, device.Gaz, device.Yaw);
+            udpClient.Send(command, command.Length, new IPEndPoint(IPAddress.Broadcast, Port));
         }
 
         private void b_Start_Click(object sender, RoutedEventArgs e)
         {
-            var command = Helpers.Instructions.MakeCommandREF(290718208);
-            //now send by udp
+            var command = Instructions.MakeCommandREF(290718208);
+            udpClient.Send(command, command.Length, new IPEndPoint(IPAddress.Broadcast, Port));
         }
 
         private void b_Land_Click(object sender, RoutedEventArgs e)
         {
-            var command = Helpers.Instructions.MakeCommandREF(290717696);
-            //now send by udp
+            var command = Instructions.MakeCommandREF(290717696);
+            udpClient.Send(command, command.Length, new IPEndPoint(IPAddress.Broadcast, Port));
         }
 
         private void b_Info_Click(object sender, RoutedEventArgs e)

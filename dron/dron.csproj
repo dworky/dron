@@ -37,9 +37,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpDX">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
-    </Reference>
     <Reference Include="SharpDX.XInput">
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.XInput.dll</HintPath>
     </Reference>

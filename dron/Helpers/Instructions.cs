@@ -58,8 +58,8 @@ namespace dron
         /// </summary>
         public static Byte[] MakeCommandPCMD(int flag = 1, int roll = 0, int pitch = 0, int gaz = 0, int yaw = 0)
         {
-            Console.WriteLine(String.Format("AT*PCMD={0},{1},{2},{3},{4},{5}\r",
-                Sequence, flag, roll, pitch, gaz, yaw));
+            //Console.WriteLine(String.Format("AT*PCMD={0},{1},{2},{3},{4},{5}\r",
+            //    Sequence, flag, roll, pitch, gaz, yaw));
             return Encoding.ASCII.GetBytes(String.Format("AT*PCMD={0},{1},{2},{3},{4},{5}\r", 
                 Sequence++, flag, roll, pitch, gaz, yaw));         
         }
@@ -74,5 +74,10 @@ namespace dron
                 Sequence++, animation, duration));
         }
 
+        public static Byte[] MakeCommandCalibrate()
+        {
+            return Encoding.ASCII.GetBytes(String.Format("AT*FTRIM={0}\r",
+                Sequence++));
+        }
     }
 }

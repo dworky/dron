@@ -7,7 +7,8 @@ namespace dron
     {
         public enum Order { UP, DOWN, FORWARD, BACK, LEFT, RIGHT, ROTATELEFT, ROTATERIGHT, HOVER };      
         public static int Sequence = 0;
-        public static float Speed = FloatConversion(0.25f);
+        public static Byte[] CurrentCommand = Instructions.MakeCommandPCMD(flag: 0);
+        public static float Speed = 0.25f;
         public static Byte[] EmergencySterring(Order order)
         {
             switch (order)

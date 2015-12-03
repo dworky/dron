@@ -11,7 +11,8 @@ namespace dron
 {
     class Connection
     {
-        DispatcherTimer senderTimer, receiverTimer;
+        DispatcherTimer senderTimer; 
+        DispatcherTimer receiverTimer; 
         UdpClient udpSender;
         UdpClient udpReceiver;
         const string ipAdress = "192.168.1.1";
@@ -33,6 +34,7 @@ namespace dron
             receiverTimer.Tick += receiverTimer_Tick;
             controlDevices = devices;
             CurrentDevice = currentDevice;
+            ControlActivated = true;
         }
 
         private void receiverTimer_Tick(object sender, EventArgs e)
@@ -62,8 +64,9 @@ namespace dron
                 device.Refresh();
                 SendCommand(Instructions.MakeCommandPCMD(1, device.Roll, device.Pitch, device.Gaz, device.Yaw));
             }
-            else SendCommand(Instructions.MakeCommandPCMD(flag: 0));           
+            else SendCommand(Instructions.CurrentCommand);           
         }
+
 
         public void SendCommand(Byte[] command)
         {

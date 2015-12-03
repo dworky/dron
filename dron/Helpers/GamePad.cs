@@ -35,7 +35,7 @@ namespace dron
         {
             get
             {
-                return Instructions.FloatConversion(this.RightThumbX);
+                return Instructions.FloatConversion(Instructions.Speed * this.RightThumbX);
             }
         }
 
@@ -43,7 +43,7 @@ namespace dron
         {
             get
             {
-                return Instructions.FloatConversion(this.LeftThumbY);
+                return Instructions.FloatConversion(Instructions.Speed * this.LeftThumbY);
             }
         }
 
@@ -51,7 +51,7 @@ namespace dron
         {
             get
             {
-                return Instructions.FloatConversion(this.RightTrigger - this.LeftTrigger);
+                return Instructions.FloatConversion(Instructions.Speed * (this.RightTrigger - this.LeftTrigger));
             }
         }
 
@@ -59,7 +59,7 @@ namespace dron
         {
             get
             {
-                return Instructions.FloatConversion(this.RightThumbX);
+                return Instructions.FloatConversion(Instructions.Speed * this.RightThumbX);
             }
         }
 

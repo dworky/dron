@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 
 
@@ -94,17 +96,70 @@ namespace dron.View
            
         private void b_Start_Click(object sender, RoutedEventArgs e)
         {
-            if (connection != null) connection.SendCommand(Instructions.MakeCommandREF(290718208));
+            var tB = sender as ToggleButton;
+            if ((bool)tB.IsChecked)
+            {
+                if (connection != null)
+                {
+                    Instructions.CurrentCommand = Instructions.MakeCommandREF(290718208);
+                    connection.ControlActivated = false;
+                    b_Land.IsEnabled = false;
+                    b_CalibrateHorizontally.IsEnabled = false;
+                    connection.Start();
+                }
+            }
+            else
+            {
+                Instructions.CurrentCommand = Instructions.MakeCommandPCMD(flag: 0);
+                connection.ControlActivated = true;
+                b_Land.IsEnabled = true;
+                b_CalibrateHorizontally.IsEnabled = true;
+                connection.Stop();
+            }
         }
 
         private void b_Land_Click(object sender, RoutedEventArgs e)
-        {
-            if (connection != null) connection.SendCommand(Instructions.MakeCommandREF(290717696));
+        {           
+            var tB = sender as ToggleButton;
+            if ((bool)tB.IsChecked)
+            {
+                if (connection != null)
+                {
+                    Instructions.CurrentCommand = Instructions.MakeCommandREF(290717696);
+                    connection.ControlActivated = false;
+                    b_Start.IsEnabled = false;
+                    b_CalibrateHorizontally.IsEnabled = false;
+                }                
+            }
+            else
+            {
+                Instructions.CurrentCommand = Instructions.MakeCommandPCMD(flag: 0);
+                connection.ControlActivated = true;
+                b_Start.IsEnabled = true;
+                b_CalibrateHorizontally.IsEnabled = true;
+            }
         }
 
         private void b_CalibrateHorizontally_Click(object sender, RoutedEventArgs e)
         {
-            if (connection != null) connection.SendCommand(Instructions.MakeCommandCalibrate());
+            var tB = sender as ToggleButton;
+            if ((bool)tB.IsChecked)
+            {
+                if (connection != null)
+                {
+                    Instructions.CurrentCommand = Instructions.MakeCommandCalibrate();
+                    connection.ControlActivated = false;
+                    b_Start.IsEnabled = false;
+                    b_Land.IsEnabled = false;
+                }
+            }
+            else
+            {
+                Instructions.CurrentCommand = Instructions.MakeCommandPCMD(flag: 0);
+                connection.ControlActivated = true;
+                b_Start.IsEnabled = true;
+                b_Land.IsEnabled = true;
+            }
         }
 
         private void b_SequenceReset_Click(object sender, RoutedEventArgs e)

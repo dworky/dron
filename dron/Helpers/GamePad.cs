@@ -8,14 +8,15 @@ namespace dron
         public delegate void OnConnectionChange(bool status);
         OnConnectionChange onConnectionChange;
         bool status;
+        int deadZone = 2000;
         float leftTrigger, rightTrigger, leftThumbX, leftThumbY, rightThumbX, rightThumbY;
         public bool Connected { get { return controller.IsConnected; } }
         public float LeftTrigger { get { return leftTrigger / 255; } }
         public float RightTrigger { get { return rightTrigger / 255; } }
-        public float LeftThumbX { get { return leftThumbX / 32768; } }
-        public float LeftThumbY { get { return leftThumbY / 32768; } }
-        public float RightThumbX { get { return rightThumbX / 32768; } }
-        public float RightThumbY { get { return rightThumbX / 32768; } }
+        public float LeftThumbX { get { if (System.Math.Abs(leftThumbX) > deadZone) return leftThumbX / 32768; else return 0; } }
+        public float LeftThumbY { get { if (System.Math.Abs(leftThumbY) > deadZone) return leftThumbY / 32768; else return 0; } } 
+        public float RightThumbX { get { if (System.Math.Abs(rightThumbX) > deadZone) return rightThumbX / 32768; else return 0; } }
+        public float RightThumbY { get { if (System.Math.Abs(rightThumbY) > deadZone) return rightThumbY / 32768; else return 0; } }
         public bool A { get; private set; }
         public bool B { get; private set; }
         public bool X { get; private set; }

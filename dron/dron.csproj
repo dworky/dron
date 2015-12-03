@@ -70,8 +70,6 @@
     <Compile Include="Helpers\Instructions.cs" />
     <Compile Include="Helpers\Keyboard.cs" />
     <Compile Include="Helpers\Kinect.cs" />
-    <Compile Include="Helpers\UdpControl.cs" />
-    <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="View\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>

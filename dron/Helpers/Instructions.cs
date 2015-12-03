@@ -6,7 +6,7 @@ namespace dron
     static class Instructions
     {
         public enum Order { UP, DOWN, FORWARD, BACK, LEFT, RIGHT, ROTATELEFT, ROTATERIGHT, HOVER };      
-        static int Sequence = 0;
+        public static int Sequence = 0;
         public static float Speed = FloatConversion(0.25f);
         public static Byte[] EmergencySterring(Order order)
         {

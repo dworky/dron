@@ -11,13 +11,14 @@ namespace dron
 {
     class Connection
     {
-        DispatcherTimer senderTimer; 
-        DispatcherTimer receiverTimer; 
+        public DispatcherTimer SenderTimer { get; set; }
+        public DispatcherTimer ReceiverTimer { get; set; }
         UdpClient udpSender;
         UdpClient udpReceiver;
-        const string ipAdress = "192.168.1.1";
-        const int senderPort = 5556;
-        const int receiverPort = 5554;
+        const string IpAdressSender = "192.168.1.1";
+        const string IpAdressReceiver = "224.1.1.1";
+        const int SenderPort = 5556;
+        const int ReceiverPort = 5554;
         IControl[] controlDevices;      
         public Device CurrentDevice { get; set; }
 
@@ -25,13 +26,11 @@ namespace dron
 
 
         public Connection(IControl[] devices, Device currentDevice)
-        {                       
-            senderTimer = new DispatcherTimer();
-            senderTimer.Interval = TimeSpan.FromMilliseconds(30);
-            senderTimer.Tick += senderTimer_Tick;
-            receiverTimer = new DispatcherTimer();
-            receiverTimer.Interval = TimeSpan.FromMilliseconds(30);
-            receiverTimer.Tick += receiverTimer_Tick;
+        {
+            SenderTimer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(30)};
+            SenderTimer.Tick += senderTimer_Tick;
+            ReceiverTimer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(30)};
+            ReceiverTimer.Tick += receiverTimer_Tick;
             controlDevices = devices;
             CurrentDevice = currentDevice;
             ControlActivated = true;
@@ -42,13 +41,12 @@ namespace dron
             try
             {
                 if (udpReceiver.Available <= 0) return;
-                var remoteIpEndPoint = new IPEndPoint(IPAddress.Any, receiverPort);
+                var remoteIpEndPoint = new IPEndPoint(IPAddress.Any, ReceiverPort);
                 var buffer = udpReceiver.Receive(ref remoteIpEndPoint);
                 if (buffer != null)
                 {
                     Console.WriteLine(Encoding.ASCII.GetString(buffer));
                 }
-                //receiverClient.Close();
             }
             catch (Exception exception)
             {
@@ -70,49 +68,37 @@ namespace dron
 
         public void SendCommand(Byte[] command)
         {
-            if(udpSender != null)            
-            udpSender.Send(command, command.Length); 
-            //jak nie zadziała , new IPEndPoint(IPAddress.Broadcast, senderPort));
+            udpSender?.Send(command, command.Length);
         }
 
         public void Start()
         {
-            if (udpSender == null && udpReceiver == null)
+            if (udpSender == null)
             {
                 udpSender = new UdpClient();
-                udpReceiver = new UdpClient();
-
-                udpSender.Connect(ipAdress, senderPort);
-                senderTimer.Start();
+                udpSender.Connect(IpAdressSender, SenderPort);
+            }
+            if (udpReceiver == null)
+            {
+                udpReceiver = new UdpClient(ReceiverPort) { MulticastLoopback = true };
+                udpReceiver.JoinMulticastGroup(IPAddress.Parse(IpAdressReceiver));
+                var command = Encoding.ASCII.GetBytes("message");
+                udpReceiver.Send(command, command.Length, new IPEndPoint(IPAddress.Broadcast, ReceiverPort)); 
             }
         }
 
         public void Stop()
         {
-            if (udpSender != null && udpReceiver != null)
-            {
-                senderTimer.Stop();
-                udpSender.Close();
-                udpReceiver.Close();
-                udpSender = null;
-                udpReceiver = null;
-            }            
+            if(SenderTimer.IsEnabled)
+                SenderTimer.Stop();
+            if(ReceiverTimer.IsEnabled)
+                ReceiverTimer.Stop();
+        }
+
+        public void CloseUdp()
+        {
+            udpReceiver?.Close();
+            udpSender?.Close();
         }
     }
 }
-
-//Zakomentowany twój kod
-
-//receiverClient = new UdpClient(ReceivePort) { MulticastLoopback = true };
-//var multiCastGroupAddress = IPAddress.Parse("224.1.1.1");
-//receiverClient.JoinMulticastGroup(multiCastGroupAddress);
-//var command = Encoding.ASCII.GetBytes("message");
-//receiverClient.Send(command, command.Length, new IPEndPoint(IPAddress.Broadcast, ReceivePort));
-// timer.Start();
-
-//command = Encoding.ASCII.GetBytes("AT*CONFIG=\\\"general:navdata_demo\\\",\\\"TRUE\\\"\\r");
-
-//udpClient.Send(command, command.Length, new IPEndPoint(IPAddress.Broadcast, Port));
-// receiverClient.Send(command, command.Length, new IPEndPoint(IPAddress.Broadcast, Port));
-
-// "AT*CONFIG=\"general:navdata_demo\",\"TRUE\"\\r"

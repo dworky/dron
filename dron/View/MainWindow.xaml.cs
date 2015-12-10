@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -29,9 +30,13 @@ namespace dron.View
             controlDevices[2] = new Kinect();
             currentDevice = Device.Keyboard;
             connection = new Connection(controlDevices, currentDevice);
+            this.Closing += OnWindowClosing;
         }
-
-
+        private void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            connection?.Stop();
+            connection?.CloseUdp();
+        }
         private void b_WifiConnection_Click(object sender, RoutedEventArgs e)
         {
             if (img_WifiDisconnected.IsVisible)
@@ -96,6 +101,11 @@ namespace dron.View
            
         private void b_Start_Click(object sender, RoutedEventArgs e)
         {
+            if (!connection.SenderTimer.IsEnabled)
+                connection.SenderTimer.Start();
+            if (!connection.ReceiverTimer.IsEnabled)
+                connection.ReceiverTimer.Start();
+
             var tB = sender as ToggleButton;
             if ((bool)tB.IsChecked)
             {
@@ -114,7 +124,6 @@ namespace dron.View
                 connection.ControlActivated = true;
                 b_Land.IsEnabled = true;
                 b_CalibrateHorizontally.IsEnabled = true;
-                connection.Stop();
             }
         }
 

@@ -77,8 +77,7 @@ namespace dron
 
         public static Byte[] MakeCommandCalibrate()
         {
-            return Encoding.ASCII.GetBytes(String.Format("AT*FTRIM={0}\r",
-                Sequence++));
+            return Encoding.ASCII.GetBytes(String.Format("AT*FTRIM={0}\r", Sequence++));
         }
     }
 }

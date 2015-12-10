@@ -23,6 +23,15 @@ namespace dron
         public Device CurrentDevice { get; set; }
 
         public bool ControlActivated { get; set; }
+        private bool takeOff = false;
+        public bool Calibration { get; set; }
+        public bool Land { get; set; } = false;
+
+        public bool TakeOff
+        {
+            get { return takeOff; }
+            set { takeOff = value; }
+        }
 
 
         public Connection(IControl[] devices, Device currentDevice)
@@ -45,7 +54,7 @@ namespace dron
                 var buffer = udpReceiver.Receive(ref remoteIpEndPoint);
                 if (buffer != null)
                 {
-                    Console.WriteLine(Encoding.ASCII.GetString(buffer));
+                    Console.WriteLine(Encoding.UTF8.GetString(buffer));
                 }
             }
             catch (Exception exception)
@@ -58,25 +67,40 @@ namespace dron
         {
             if (ControlActivated)
             {
-                IControl device = controlDevices[(int)CurrentDevice];
+                IControl device = controlDevices[(int) CurrentDevice];
                 device.Refresh();
                 SendCommand(Instructions.MakeCommandPCMD(1, device.Roll, device.Pitch, device.Gaz, device.Yaw));
             }
-            else SendCommand(Instructions.CurrentCommand);           
+            else
+            {
+                SendCommand(Instructions.CurrentCommand);
+                if(takeOff)
+                    Instructions.CurrentCommand = Instructions.MakeCommandREF(290718208);
+                if (Land)
+                {
+                    Instructions.CurrentCommand = Instructions.MakeCommandREF(290717696);
+                }
+                if (Calibration)
+                {
+                    Instructions.CurrentCommand = Instructions.MakeCommandCalibrate();
+                }
+            }
         }
+    
 
 
         public void SendCommand(Byte[] command)
         {
-            udpSender?.Send(command, command.Length);
+         //   Console.WriteLine(Encoding.UTF8.GetString(command));
+            udpSender.Send(command, command.Length, new IPEndPoint(IPAddress.Broadcast, SenderPort));
         }
 
         public void Start()
         {
             if (udpSender == null)
             {
-                udpSender = new UdpClient();
-                udpSender.Connect(IpAdressSender, SenderPort);
+                udpSender = new UdpClient(SenderPort);
+               // udpSender.Connect(IpAdressSender, SenderPort);
             }
             if (udpReceiver == null)
             {

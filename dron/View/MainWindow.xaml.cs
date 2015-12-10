@@ -116,6 +116,7 @@ namespace dron.View
                     b_Land.IsEnabled = false;
                     b_CalibrateHorizontally.IsEnabled = false;
                     connection.Start();
+                    connection.TakeOff = true;
                 }
             }
             else
@@ -124,6 +125,8 @@ namespace dron.View
                 connection.ControlActivated = true;
                 b_Land.IsEnabled = true;
                 b_CalibrateHorizontally.IsEnabled = true;
+                connection.TakeOff = false;
+
             }
         }
 
@@ -138,10 +141,12 @@ namespace dron.View
                     connection.ControlActivated = false;
                     b_Start.IsEnabled = false;
                     b_CalibrateHorizontally.IsEnabled = false;
+                    connection.Land = true;
                 }                
             }
             else
             {
+                connection.Land = false;
                 Instructions.CurrentCommand = Instructions.MakeCommandPCMD(flag: 0);
                 connection.ControlActivated = true;
                 b_Start.IsEnabled = true;
@@ -151,11 +156,16 @@ namespace dron.View
 
         private void b_CalibrateHorizontally_Click(object sender, RoutedEventArgs e)
         {
+            if (!connection.SenderTimer.IsEnabled)
+                connection.SenderTimer.Start();
+            if (!connection.ReceiverTimer.IsEnabled)
+                connection.ReceiverTimer.Start();
             var tB = sender as ToggleButton;
             if ((bool)tB.IsChecked)
             {
                 if (connection != null)
                 {
+                    connection.Calibration = true;
                     Instructions.CurrentCommand = Instructions.MakeCommandCalibrate();
                     connection.ControlActivated = false;
                     b_Start.IsEnabled = false;
@@ -164,6 +174,7 @@ namespace dron.View
             }
             else
             {
+                connection.Calibration = false;
                 Instructions.CurrentCommand = Instructions.MakeCommandPCMD(flag: 0);
                 connection.ControlActivated = true;
                 b_Start.IsEnabled = true;

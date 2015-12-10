@@ -165,7 +165,7 @@ namespace dron.View
             {
                 if (connection != null)
                 {
-                    connection.Calibration = true;
+                   // connection.Calibration = true;
                     Instructions.CurrentCommand = Instructions.MakeCommandCalibrate();
                     connection.ControlActivated = false;
                     b_Start.IsEnabled = false;
@@ -174,7 +174,7 @@ namespace dron.View
             }
             else
             {
-                connection.Calibration = false;
+              //  connection.Calibration = false;
                 Instructions.CurrentCommand = Instructions.MakeCommandPCMD(flag: 0);
                 connection.ControlActivated = true;
                 b_Start.IsEnabled = true;

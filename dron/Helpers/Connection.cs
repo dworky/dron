@@ -24,7 +24,6 @@ namespace dron
 
         public bool ControlActivated { get; set; }
         private bool takeOff = false;
-        public bool Calibration { get; set; }
         public bool Land { get; set; } = false;
 
         public bool TakeOff
@@ -54,7 +53,7 @@ namespace dron
                 var buffer = udpReceiver.Receive(ref remoteIpEndPoint);
                 if (buffer != null)
                 {
-                    Console.WriteLine(Encoding.UTF8.GetString(buffer));
+                    Console.WriteLine(Encoding.ASCII.GetString(buffer));
                 }
             }
             catch (Exception exception)
@@ -80,10 +79,6 @@ namespace dron
                 {
                     Instructions.CurrentCommand = Instructions.MakeCommandREF(290717696);
                 }
-                if (Calibration)
-                {
-                    Instructions.CurrentCommand = Instructions.MakeCommandCalibrate();
-                }
             }
         }
     
@@ -91,7 +86,7 @@ namespace dron
 
         public void SendCommand(Byte[] command)
         {
-         //   Console.WriteLine(Encoding.UTF8.GetString(command));
+            Console.WriteLine(Encoding.UTF8.GetString(command));
             udpSender.Send(command, command.Length, new IPEndPoint(IPAddress.Broadcast, SenderPort));
         }
 

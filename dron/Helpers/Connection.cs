@@ -79,15 +79,18 @@ namespace dron
                 {
                     Instructions.CurrentCommand = Instructions.MakeCommandREF(290717696);
                 }
+                ((Kinect)controlDevices[(int)Device.Kinect]).Reset();
             }
         }
-    
+
 
 
         public void SendCommand(Byte[] command)
         {
             Console.WriteLine(Encoding.UTF8.GetString(command));
             udpSender.Send(command, command.Length, new IPEndPoint(IPAddress.Broadcast, SenderPort));
+            // if (CurrentDevice == Device.Kinect)
+            ((Kinect)controlDevices[(int)Device.Kinect]).Reset();
         }
 
         public void Start()

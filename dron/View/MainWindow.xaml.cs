@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
@@ -19,6 +20,7 @@ namespace dron.View
         Device currentDevice;
         IControl[] controlDevices;                     
         Connection connection;
+        private bool isSkeletonTracked;
 
 
         public MainWindow()
@@ -31,9 +33,12 @@ namespace dron.View
             currentDevice = Device.Keyboard;
             connection = new Connection(controlDevices, currentDevice);
             this.Closing += OnWindowClosing;
+            ((Kinect) controlDevices[2]).SkeletonTracked += KinectSkeletonTracked;
+            DataContext = controlDevices[2];
         }
         private void OnWindowClosing(object sender, CancelEventArgs e)
         {
+            ((Kinect)controlDevices[2]).Stop();
             connection?.Stop();
             connection?.CloseUdp();
         }
@@ -73,7 +78,7 @@ namespace dron.View
                     if (connection != null) connection.CurrentDevice = Device.Keyboard;
                     break;
                 case "Kinect":
-                    if (connection != null) connection.CurrentDevice = Device.Kinect;
+                    if (connection != null && isSkeletonTracked) connection.CurrentDevice = Device.Kinect;
                     break;
             }
         }
@@ -82,7 +87,6 @@ namespace dron.View
         {
             l_Speed.Content = "Szybkość manewrów: " + (int)s_Speed.Value + "%";
             Instructions.Speed = (float)s_Speed.Value / 100;
-            Console.WriteLine(Instructions.Speed);
         }
 
         private void PadStatusChanged(bool status)
@@ -98,7 +102,24 @@ namespace dron.View
                 img_PadDisconnected.Visibility = Visibility.Visible;
             }
         }
-           
+
+        private void KinectSkeletonTracked(object sender, EventArgs eventArgs)
+        {
+            isSkeletonTracked = (bool) sender;
+            if(isSkeletonTracked)
+            {
+                img_KinectConnected.Visibility = Visibility.Visible;
+                img_KinectDisconnected.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                img_KinectConnected.Visibility = Visibility.Collapsed;
+                img_KinectDisconnected.Visibility = Visibility.Visible;
+                //if (connection?.CurrentDevice == Device.Kinect)
+                //    connection.CurrentDevice = Device.Keyboard;
+            }
+        }
+
         private void b_Start_Click(object sender, RoutedEventArgs e)
         {
             if (!connection.SenderTimer.IsEnabled)
